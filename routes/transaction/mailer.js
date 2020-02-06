@@ -29,7 +29,7 @@ router.post("/nodemailer", async(req, res)=>{
     })}
 
     mailOptions={
-        from:'"bnhjkjkjl"<moni07sep@gmail.com>',
+        from:'"bnhjkjkjl"',// add sender email id
         to: user.userLogin.emailId,
         subject:'reset password',
         text:'open link'+token
