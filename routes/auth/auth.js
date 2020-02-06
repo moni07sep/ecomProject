@@ -7,15 +7,15 @@ let config =require("config")
 let User = require("../../modeldb/user.js");
 
 router.post("/auth", async (req, res) => {    
-    let { error } = ValidationError(req.body);
-    if (error) { return res.send(error.details[0].message) };
+    
     let user = await User.userModel.findOne({ "userLogin.emailId": req.body.userLogin.emailId });
     if (!user) { return res.status(403).send({ messsage: "Invalid email id" }) }
     let password= await bcrypt.compare(req.body.userLogin.password,user.userLogin.password)
     if (!password) { return res.status(403).send({ messsage: "Invalid password" }) };
-    let token= jwt.sign({_id : user._id} , config.get("ecomapi"));
-
-    res.send({token:token});
+    let { error } = ValidationError(req.body);
+    if (error) { return res.send(error.details[0].message) };
+    let token=user.Tokenperson();
+    res.header("x-auth-token",token).send({token:token});
 })
  
 function ValidationError(error) {

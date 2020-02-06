@@ -3,6 +3,15 @@ let Joi =require("@hapi/joi")
 let router =express.Router();
 let bcrypt=require("bcrypt");
 let User = require("../modeldb/user.js")
+let Auth = require("../middleware/auth")
+let Admin =require("../middleware/admin")
+
+
+//loggedin user details
+router.get("/me",Auth , async(req,res)=>{
+    let data=await User.userModel.findById(req.user._id);
+    res.send(data);
+})
 
 router.post("/createnewuser",async(req,res)=>{
     
@@ -32,6 +41,18 @@ router.post("/createnewuser",async(req,res)=>{
 
     
 })
+
+router.get("/fetchuserdata",Auth,async(req,res)=>{
+    let user = await User.userModel.find();
+    res.send({u:user});
+})
+
+router.delete("/removedata/:id",[Auth,Admin], async (req, res) => {
+    let user  = await User.userModel.findByIdAndRemove(req.params.id);
+     if (!user) { return res.status(404).send({ message: "Invalid user id" }) };
+    res.send({ message: "Thank you ! come back again " });
+});
+
 
 
 module.exports = router;

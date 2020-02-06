@@ -1,6 +1,6 @@
 let mongoose = require("mongoose");
-//let jwt = require("jsonwebtoken");
-//let config = require("config");
+let jwt = require("jsonwebtoken");
+let config = require("config");
 let Joi = require("@hapi/joi");
 let userSchema = new mongoose.Schema({
     firstName: { type: String, min: 4, max: 100, trim: true, required: true },
@@ -17,6 +17,11 @@ let userSchema = new mongoose.Schema({
     recordDate:{type:Date , default:Date.now()},
     updateDate:{type:Date, default:Date.now()}
 });
+
+userSchema.methods.Tokenperson=function(){
+    let token= jwt.sign({_id : this._id,isAdmin :this.isAdmin} , config.get("ecomapi"));
+    return token;
+}
 
 function userValidationError(error){
     let schema=Joi.object({
