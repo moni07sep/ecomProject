@@ -1,6 +1,8 @@
 let  express = require("express");
 let mongoose =require("mongoose");
+let cors = require("cors")
 let app=express();
+
 let user= require("./routes/user.js")
 let auth =require("./routes/auth/auth.js")
 let config =require("config");
@@ -10,7 +12,7 @@ if(!config.get("ecomapi")){
     console.log("acsses denied");
     process.exit(1);
 }
-
+app.use(cors());
 app.use(express.json());
 let port = process.env.PORT || 4600;
 

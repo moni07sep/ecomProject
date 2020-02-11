@@ -10,9 +10,9 @@ let userSchema = new mongoose.Schema({
         emailId: { type: String, required: true, unique: true },
         password: { type: String, required: true, min: 4, max: 150 }
     },
-    termAcceptCheck:{type:Boolean ,required:true},
-    resetPasswordKey:{type: String,  min: 4, max: 100, trim: true},
-    resetPasswordExpire:{type:Date},
+    termAcceptCheck:{type:Boolean },
+    resetPasswordKey:{type: String},
+    resetPasswordExpire:{type:String},
     isAdmin:{type:Boolean},
     recordDate:{type:Date , default:Date.now()},
     updateDate:{type:Date, default:Date.now()}
@@ -32,9 +32,9 @@ function userValidationError(error){
         emailId:Joi.string().required().email() ,
         password: Joi.any().required()
     },
-    termAcceptCheck:Joi.boolean().required(),
+    termAcceptCheck:Joi.boolean(),
     resetPasswordKey:Joi.string(),
-    resetPasswordExpire:Joi.date(),
+    resetPasswordExpire:Joi.string(),
     isAdmin:Joi.boolean(),
     recordDate:Joi.date(),
     updateDate:Joi.date()
