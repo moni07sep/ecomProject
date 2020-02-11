@@ -4,6 +4,7 @@ let cors = require("cors")
 let app=express();
 
 let user= require("./routes/user.js")
+let product=require("./routes/product")
 let auth =require("./routes/auth/auth.js")
 let config =require("config");
 let mailer=require("./routes/transaction/mailer");
@@ -25,5 +26,7 @@ app.use("/api",user);
 app.use("/api",auth);
 app.use("/api/mail",mailer);
 app.use("/api", forgotpassword);
+
+app.use("/api",product);
 app.listen(port,()=>console.log(`port is working on ${port}`))
 
