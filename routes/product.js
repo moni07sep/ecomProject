@@ -80,15 +80,25 @@ router.post("/addsubcategory", async (req, res) => {
 router.post('/addcategory',async(req,res)=>{
     let { error } = model.categoryValidation(req.body);
     if (error) { return res.send(error.details[0].message) };
-    let subcate = await model.subcategory.findById(req.body.subcateId);
-    if (!subcate) { return res.status(403).send({ message: "Invalid subcate id" }) };
-    let data = new model.category({
-        catname: req.body.catname,   
-        subcate: {
-            _id: subcate._id,
-            name: subcate.name
-        }
-    });
+    // let subcate = await model.subcategory.findById(req.body.subcate);
+    // if (!subcate) { return res.status(403).send({ message: "Invalid subcate id" }) };
+    // let data = new model.category({
+    //     catname: req.body.catname,   
+    //     subcate: {
+    //         _id: subcate._id,
+    //         name: subcate.name
+    //     }
+    // });
+    let data = new model.category(req.body);
+    //---------POSTMANCHECK--------
+    //     {
+    //         "catname":"liquid",
+    //         "subcate" : [{
+    //                "name": "category1"
+    //         },
+    //         {
+    //                "name": "category2"
+    //         }]}
     //let data= await newcategory.subcate.push({ name: 'req.body.name' }).save();
     let item = await data.save();
     res.send({ i: item });

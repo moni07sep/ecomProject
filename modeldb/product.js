@@ -8,7 +8,7 @@ let subcategory=mongoose.model('subcategory',subcategorySchema);
 
 let categorySchema=new mongoose.Schema({
     catname:{type:String, required:true, minlength:3, maxlength:100},
-    subcate:{type:subcategorySchema}
+    subcate:[subcategorySchema]
 })
 let category =mongoose.model('category',categorySchema);
 
@@ -38,7 +38,7 @@ function subcategoryValidation(error){
 function categoryValidation(error){
     let schema=Joi.object({
         catname:Joi.string().required(),
-        subcateId:Joi.string().required()
+        subcate:Joi.required()
     })
     return schema.validate(error)
 }
