@@ -3,7 +3,6 @@ const router=express.Router();
 const Joi=require('@hapi/joi');
 let model=require('../modeldb/product');
 
-
 router.post("/createnewproduct",async(req,res)=>{
     
     let {error}=model.productvalidation(req.body);
@@ -65,7 +64,71 @@ router.put("/productupdate/:id", async (req,res)=>{
     let data=await  product.save();
     res.send({ d: data });
     
+})
+
+router.get("/productsearch/:id", async(req,res)=>{
+    let product=await model.product.findById(req.params.id);
+    if (!product){return res.status(404).send({ message: "Invalid user id" })}
+    res.send({product:product});
+})
+
+//-------------------------------------------------------------------------
+
+router.get("/category/:category/page/:pageIdx", async(req,res)=>{
+    let perpage=3;
+    let page=(req.params.pageIdx) ||1;
+    if(page<0|| page===0){
+        return res.status(403).send('invalid page number,shouldstart with 1')
+    }
+    let filterproduct= await model.product.find({catagory:req.params.category});
+    let productcount= filterproduct.length;
+    let product = await model.product.find({catagory:req.params.category}).skip((perpage*page)-perpage).limit(perpage);
+    if(!product){
+        return res.status(403).send("data not found")
+    }
+    res.send({
+        message:'success',
+        data:product,
+        page:page,
+        productcount:productcount
     })
+})
+
+router.get("/category/:category/subCategory/:subCategory/page/:pageIdx", async(req,res)=>{
+    let perpage=3;
+    let page=(req.params.pageIdx) ||1;
+    if(page<0|| page===0){
+        return res.status(403).send('invalid page number,shouldstart with 1')
+    }
+    let filterproduct= await model.product.find({catagory:req.params.category,subCatagory:req.params.subCategory});
+    let productcount= filterproduct.length;
+    let product = await model.product.find({catagory:req.params.category,subCatagory:req.params.subCategory}).skip((perpage*page)-perpage).limit(perpage);
+    if(!product){
+        return res.status(403).send("data not found")
+    }
+    res.send({
+        message:'success',
+        data:product,
+        page:page,
+        productcount:productcount
+    })
+})
+
+router.get("/latestproduct",async(req,res)=>{
+let product= await model.product.find().limit(5);
+if(!product){
+    return res.status(403).send("data not found")
+}
+res.send({message:'success',data:product})
+})
+
+router.get("/offerproduct",async(req,res)=>{
+    let product= await model.product.find({isTodayOffer:true})
+    if(!product){
+        return res.status(403).send("data not found")
+    }
+    res.send({message:'success',data:product})
+})
 //-------------------------------------------------------------------------
 router.post("/addsubcategory", async (req, res) => {
     let { error } =model.subcategoryValidation(req.body);
