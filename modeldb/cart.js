@@ -1,4 +1,5 @@
 let mongoose =require("mongoose");
+let Joi=require('@hapi/joi');
  
 let cartItemSchema=new mongoose.Schema({
     prodId:{type:String,required:true,minlength:1,maxlength:100},
@@ -18,4 +19,12 @@ let userCartSchema=new mongoose.Schema({
 })
 let userCartItem=mongoose.model('usercart',userCartSchema);
 
-module.exports={cartItemRecord,userCartItem}
+function userCartValidation(error){
+    let schema=Joi.object({
+        userEmail:Joi.string().required(),
+        cartItem:Joi.array()
+    })
+    return schema.validate(error)
+}
+
+module.exports={cartItemRecord,userCartItem,userCartValidation}
