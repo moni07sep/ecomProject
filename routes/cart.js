@@ -38,4 +38,28 @@ router.put("/updateToCart/:id",async(req, res)=>{
 
 })
 
+router.delete("/removecartitem/:emailId", async (req, res) => {
+    let cart  = await model.userCartItem.findOneAndDelete({"userEmail":req.params.emailId});
+    if (!cart) { return res.status(404).send({ message: "Invalid user id" }) };
+    res.send({ message: "Thank you ! come back again " });
+});
+
+router.post("/cartByUser",async(req,res)=>{
+    let cartByUser=await model.userCartItem({"userEmail":req.body.userEmail})
+    if(!cartByUser){
+        return res.status(403).send('data not found')
+    }
+    res.send({
+        data:cartByUser
+    })
+})
+
+router.get("/allUserCart", async (req,res)=>{
+    let cart=await model.userCartItem.find();
+    if (!cart){return res.status(404).send({ message: "no data" })}
+    res.send(cart);
+
+})
+
+
 module.exports=router;
