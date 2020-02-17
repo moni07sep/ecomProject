@@ -15,14 +15,14 @@ let cartItemRecord=mongoose.model('cartItemRecord',cartItemSchema);
 
 let userCartSchema=new mongoose.Schema({
     userEmail:{type:String,required:true,minlength:5,maxlength:50},
-    cartItem:[cartItemSchema]
+    cartItem:{type:cartItemSchema}
 })
 let userCartItem=mongoose.model('usercart',userCartSchema);
 
 function userCartValidation(error){
     let schema=Joi.object({
         userEmail:Joi.string().required(),
-        cartItem:Joi.array()
+        cartItemId:Joi.required()
     })
     return schema.validate(error)
 }

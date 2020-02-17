@@ -29,10 +29,10 @@ router.post("/nodemailer", async(req, res)=>{
     })}
 
     mailOptions={
-        from:'"bnhjkjkjl"',// add sender email id
+        from:'"PasswordReset"<ABC@GMAIL.COM>',// add sender email id
         to: user.userLogin.emailId,
         subject:'reset password',
-        text:'open link'+token
+        text:'http://localhost:4200/resetpassword/'+token
     }
     transpoter.sendMail(mailOptions,(error,info)=>{
         if(error){
