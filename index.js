@@ -17,6 +17,7 @@ if(!config.get("ecomapi")){
 }
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded());
 let port = process.env.PORT || 4600;
 
 mongoose.connect("mongodb://localhost/ecom",{ useNewUrlParser: true,useUnifiedTopology: true})

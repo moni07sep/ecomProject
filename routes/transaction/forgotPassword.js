@@ -6,12 +6,14 @@ let User =require("../../modeldb/user");
 
 router.post("/forgotpassword/:token" ,async(req,res)=>
 {
+    console.log(req.params.token);
     let user = await User.userModel.findOne({
         "resetPasswordKey": req.params.token,
-        "resetPasswordExpire":{$gt:Date.now() }
+        "resetPasswordExpire":{$gt: Date.now() }
     })
-
+    console.log(req.params.token);
     if (!user) { return res.status(403).send({ message: "invalid token or token got expires" }) };
+    
     let oldpassword = await bcrypt.compare(req.body.userLogin.password, user.userLogin.password);
     if (oldpassword) { return res.status(404).send({ message: "old password, please try to create new password" }) };
     user.userLogin.password = req.body.userLogin.password;
