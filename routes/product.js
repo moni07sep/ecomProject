@@ -32,7 +32,7 @@ router.post("/createnewproduct",async(req,res)=>{
 
 router.get("/fetchallproduct", async(req,res)=>{
     let product = await model.product.find();
-    res.send({u:product});
+    res.send({u:product,msg:"done"});
 })
 
 router.delete("/productdelete/:id",async(req,res)=>{
@@ -69,7 +69,7 @@ router.put("/productupdate/:id", async (req,res)=>{
 router.get("/productsearch/:id", async(req,res)=>{
     let product=await model.product.findById(req.params.id);
     if (!product){return res.status(404).send({ message: "Invalid user id" })}
-    res.send({product:product});
+    res.send([product]);
 })
 
 //-------------------------------------------------------------------------
@@ -86,12 +86,34 @@ router.get("/category/:category/page/:pageIdx", async(req,res)=>{
     if(!product){
         return res.status(403).send("data not found")
     }
-    res.send({
-        message:'success',
-        data:product,
-        page:page,
-        productcount:productcount
-    })
+    res.send(product)
+    // res.send({
+    //     message:'success',
+    //     data:product,
+    //     page:page,
+    //     productcount:productcount
+    // })
+})
+
+router.get("/product/page/:pageIdx", async(req,res)=>{
+    let perpage=3;
+    let page=(req.params.pageIdx) ||1;
+    if(page<0|| page===0){
+        return res.status(403).send('invalid page number,shouldstart with 1')
+    }
+    let filterproduct= await model.product.find();
+    let productcount= filterproduct.length;
+    let product = await model.product.find().skip((perpage*page)-perpage).limit(perpage);
+    if(!product){
+        return res.status(403).send("data not found")
+    }
+    res.send(product)
+    // res.send({
+    //     message:'success',
+    //     data:product,
+    //     page:page,
+    //     productcount:productcount
+    // })
 })
 
 router.get("/category/:category/subCategory/:subCategory/page/:pageIdx", async(req,res)=>{
@@ -127,7 +149,7 @@ router.get("/offerproduct",async(req,res)=>{
     if(!product){
         return res.status(403).send("data not found")
     }
-    res.send({message:'success',data:product})
+    res.send(product)
 })
 //-------------------------------------------------------------------------
 router.post("/addsubcategory", async (req, res) => {
@@ -170,7 +192,7 @@ router.post('/addcategory',async(req,res)=>{
 
 router.get("/fetchallcategory", async(req,res)=>{
     let category = await model.category.find();
-    res.send({u:category});
+    res.send(category);
 })
 router.get("/findcategory/:id", async (req,res)=>{
 
