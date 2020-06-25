@@ -13,16 +13,16 @@ let categorySchema=new mongoose.Schema({
 let category =mongoose.model('category',categorySchema);
 
 let productSchema=new mongoose.Schema({
-    name:{type:String, required:true, minlength:3, maxlength:100},
-    image:{type:String, required:true, minlength:3, maxlength:100},
-    description:{type:String, required:true, minlength:3, maxlength:1000},
-    price:{type:Number, required:true, minlength:1},
-    offerPrice:{type:Number, required:true, minlength:1},
+    name:{type:String, required:true},
+    image:{type:String, required:true},
+    description:{type:String, required:true},
+    price:{type:Number, required:true },
+    offerPrice:{type:Number, required:true},
     isAvailable:{type:Boolean ,required:true},
     isTodayOffer:{type:Boolean ,required:true},
-    catagory:{type:String, required:true, minlength:3, maxlength:100},
-    subCatagory:{type:String, required:true, minlength:3, maxlength:100},
-    isAdmin:{type:Boolean},
+    catagory:{type:String, required:true},
+    subCatagory:{type:String, required:true},
+    isAdmin:{type:String, required:true},
     recordDate:{type:Date, default:Date.now},
     updateDate:{type:Date, default:Date.now}
 })

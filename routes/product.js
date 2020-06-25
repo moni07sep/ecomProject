@@ -2,30 +2,49 @@ const express=require('express');
 const router=express.Router();
 const Joi=require('@hapi/joi');
 let model=require('../modeldb/product');
+let multer  = require('multer');
+express.static('./uploads/');
+//let upload = multer({ dest: './uploads/' })
 
-router.post("/createnewproduct",async(req,res)=>{
+var path = require('path')
+
+var storage = multer.diskStorage({
+  destination: './uploads/',
+  filename: function (req, file, cb) {
     
-    let {error}=model.productvalidation(req.body);
-    if(error){return res.send(error.details[0].message)};
-    let {name,image,description,price,offerPrice,isAvailable,
-        isTodayOffer,catagory,subCatagory}=req.body;
+
+      cb(null, Date.now() + path.extname(file.originalname))
+    
+  }
+})
+
+var upload = multer({ storage: storage })  
+
+router.post("/createnewproduct", upload.single("image") , async (req,res)=>{
+
+    var file=req.file;
+    console.log(file);
+    if(!file){
+            console.log("nofile");
+    }
+
     let newProduct  =new model.product({
-        name,
-        image,
-        description,
-        price,
-        offerPrice,
-        isAvailable,
-        isTodayOffer,
-        catagory,
-        subCatagory,
-        isAdmin:false,
+        name: req.body.name,
+        image: req.file.filename,
+        description: req.body.description,
+        price: req.body.price,
+        offerPrice: req.body.offerPrice,
+        isAvailable: req.body.isAvailable,
+        isTodayOffer: req.body.isTodayOffer,
+        catagory: req.body.catagory,
+        subCatagory: req.body.subCatagory,
+        isAdmin: req.body.isAdmin,
         recordDate:Date.now(),
         updateDate:Date.now()
         
     })
     
-    let data = await newProduct.save();
+    let data = await  newProduct.save();
     res.send({message:"New product Added",d:data})
        
 })
@@ -34,6 +53,7 @@ router.get("/fetchallproduct", async(req,res)=>{
     let product = await model.product.find();
     res.send({u:product,msg:"done"});
 })
+
 
 router.delete("/productdelete/:id",async(req,res)=>{
     let product =await model.product.findByIdAndRemove(req.params.id);
@@ -82,7 +102,9 @@ router.get("/category/:category/page/:pageIdx", async(req,res)=>{
     }
     let filterproduct= await model.product.find({catagory:req.params.category});
     let productcount= filterproduct.length;
-    let product = await model.product.find({catagory:req.params.category}).skip((perpage*page)-perpage).limit(perpage);
+    // let product = await model.product.find({catagory:req.params.category}).skip((perpage*page)-perpage).limit(perpage);
+    let product = await model.product.find({catagory:req.params.category});
+
     if(!product){
         return res.status(403).send("data not found")
     }

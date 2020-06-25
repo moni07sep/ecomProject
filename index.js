@@ -1,6 +1,7 @@
 let  express = require("express");
 let mongoose =require("mongoose");
 let cors = require("cors")
+
 let app=express();
 
 let user= require("./routes/user.js")
@@ -11,13 +12,19 @@ let config =require("config");
 let mailer=require("./routes/transaction/mailer");
 let forgotpassword = require("./routes/transaction/forgotPassword");
 let pagination=require("./routes/pagination")
+var bodyParser = require('body-parser')
+
 if(!config.get("ecomapi")){
     console.log("acsses denied");
     process.exit(1);
 }
+
+app.use(express.static('uploads'));
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 let port = process.env.PORT || 4600;
 
 mongoose.connect("mongodb://localhost/ecom",{ useNewUrlParser: true,useUnifiedTopology: true})
